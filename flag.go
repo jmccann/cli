@@ -755,11 +755,12 @@ func stringifySliceFlag(usage, name string, defaultVals []string) string {
 }
 
 func flagFromFileEnv(filePath, envName string) (val string, ok bool) {
-	if filePath != "" {
-		if data, err := ioutil.ReadFile(filePath); err == nil {
+	for _, fileVar := range strings.Split(filePath, ",") {
+		if data, err := ioutil.ReadFile(fileVar); err == nil {
 			return string(data), true
 		}
 	}
+
 	for _, envVar := range strings.Split(envName, ",") {
 		envVar = strings.TrimSpace(envVar)
 		if envVal, ok := syscall.Getenv(envVar); ok {
